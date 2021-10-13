@@ -1,0 +1,2 @@
+select format(count(*), '#,#') as count rows
+from table;
