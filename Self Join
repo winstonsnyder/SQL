@@ -1,1 +1,9 @@
-
+--Northwind
+select
+	a.ContactName as CustomerName1,
+	b.ContactName as CustomerName2,
+	a.city
+from customers a, customers b
+where a.CustomerID <> b.CustomerID
+and a.city = b.city
+order by a.city;
