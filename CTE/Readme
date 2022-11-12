@@ -1,1 +1,33 @@
+/*
+* Deepak K
+* https://www.linkedin.com/posts/deepak-k12_sql-data-google-activity-6997211128137224192-T6Ll?utm_source=share&utm_medium=member_desktop
+* ======================================================================================================================================
+* So in my base query, I will first fetch the maximum number of users.
+* Then in my recursive query I will decrement the num_users by 1 using ‘cte.num_users - 1’ until it reaches the filter condition ‘WHERE cte.num_users > 1’.
+* And then the results will be merged together.
+* This will continue till the last row of the table.
+* Since in PostgreSQL we don’t have a function to calculate the median directly, we can leverage the functionality of PERCENTILE_CONT() to do this task.
+* The median is the 50th percentile, so we can pass 0.5 as the argument to the function.
+* The WITHIN GROUP clause creates an ordered subset of values that are returned from the CTE, and this will be used to perform the aggregation.
+* Finally, we will round the median to one decimal point. And that’s our solution.
+*/
+
+WITH RECURSIVE ungroup_cte
+AS(
+  SELECT
+    searches,
+    num_users
+  FROM search_frequency
+  UNION ALL
+  SELECT
+    cte.searches,
+    cte.num_users - 1
+  FROM ungroup_cte cte
+  WHERE cte.num_users > 1
+  )
+  
+SELECT
+  ROUND(PERCENTILE_CONT(0.5) WITHIN
+    GROUP(ORDER BY Searches)::DECIMAL,1) AS median
+FROM ungroup_cte;
 
