@@ -1,0 +1,9 @@
+the line numbers in the gutter to the left of your query window.
+
+Here’s how to add them:
+
+Click Tools > Options
+
+Then Text Editor > Transact-SQL and then make sure the ‘Line numbers’ tickbox (checkbox) is ticked (checked).
+
+It really is as easy as that, and it makes such a difference to your working environment.
