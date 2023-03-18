@@ -1,0 +1,22 @@
+use WideWorldImportersDW
+go
+
+select *
+into #SalesTableWithCustKey
+from fact.Sale
+where [Customer Key] > 0
+
+select
+[Customer Key],
+sum([Total Including Tax]) as [Total Spend]
+into #SalesTableGrouped
+from #SalesTableWithCustKey
+group by
+	[Customer Key]
+
+select top 10 *
+into #SummaaryTableFiltered
+from #SalesTableGrouped
+order by [Total Spend] desc
+
+select * from #SummaaryTableFiltered
