@@ -1,0 +1,40 @@
+-- Use mydupes database
+
+-- count duplicates
+select
+	e.name,
+	e.ssn,
+	count(*) as duplicates
+from mydupes.dbo.employees e
+group by
+	e.name,
+	e.ssn
+having count(*) > 1;
+
+-- identify the duplicate rows
+with ranked as (
+select *,
+	row_number() over(
+		partition by e.name, e.ssn
+		order by e.employee_id
+		) as rn
+from mydupes.dbo.employees e
+)
+select *
+from ranked
+where rn > 1;
+
+-- delete duplicates using cte
+with cte as (
+	select
+		e.employee_id,
+		e.name,
+		e.ssn,
+		row_number() over (
+			partition by e.ssn
+			order by e.employee_id asc)
+			as row_nbr
+from mydupes.dbo.employees e
+)
+delete from cte
+where row_nbr > 1;
